@@ -22,7 +22,7 @@ import java.util.Collections;
 import java.util.List;
 
 @WebFluxTest(controllers = ApiGatewayController.class)
-@Import({ReactiveResilience4JAutoConfiguration.class, CircuitBreakerConfiguration.class})
+@Import({ReactiveResilience4JAutoConfiguration.class, CircuitBreakerConfiguration.class, org.springframework.samples.petclinic.api.config.WebClientConfig.class})
 class ApiGatewayControllerTest {
 
     @MockitoBean

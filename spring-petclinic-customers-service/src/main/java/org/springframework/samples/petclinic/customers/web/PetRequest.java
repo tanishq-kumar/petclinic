@@ -16,6 +16,7 @@
 package org.springframework.samples.petclinic.customers.web;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Size;
 
 import java.util.Date;
@@ -28,6 +29,7 @@ record PetRequest(int id,
                   Date birthDate,
                   @Size(min = 1)
                   String name,
+                  @Min(1)
                   int typeId
 ) {
 

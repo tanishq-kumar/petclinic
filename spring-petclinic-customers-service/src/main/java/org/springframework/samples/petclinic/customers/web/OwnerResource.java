@@ -18,8 +18,13 @@ package org.springframework.samples.petclinic.customers.web;
 import io.micrometer.core.annotation.Timed;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.samples.petclinic.customers.web.mapper.OwnerEntityMapper;
 import org.springframework.samples.petclinic.customers.model.Owner;
@@ -27,7 +32,6 @@ import org.springframework.samples.petclinic.customers.model.OwnerRepository;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 /**
  * @author Juergen Hoeller
@@ -51,50 +55,52 @@ class OwnerResource {
         this.ownerEntityMapper = ownerEntityMapper;
     }
 
-    /**
-     * Create Owner
-     */
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Owner createOwner(@Valid @RequestBody OwnerRequest ownerRequest) {
+    public OwnerResponse createOwner(@Valid @RequestBody OwnerRequest ownerRequest) {
         Owner owner = ownerEntityMapper.map(new Owner(), ownerRequest);
-        return ownerRepository.save(owner);
+        Owner saved = ownerRepository.save(owner);
+        log.info("Created owner id={}", saved.getId());
+        return OwnerResponse.from(saved);
     }
 
-    /**
-     * Read single Owner
-     */
     @GetMapping(value = "/{ownerId}")
-    public Optional<Owner> findOwner(@PathVariable("ownerId") @Min(1) int ownerId) {
-        return ownerRepository.findById(ownerId);
+    public OwnerResponse findOwner(@PathVariable("ownerId") @Min(1) int ownerId) {
+        Owner owner = ownerRepository.findById(ownerId)
+            .orElseThrow(() -> new ResourceNotFoundException("Owner " + ownerId + " not found"));
+        return OwnerResponse.from(owner);
     }
 
-    /**
-     * Read List of Owners
-     */
+    @GetMapping(value = "/{ownerId}/compliance")
+    public OwnerComplianceResponse findOwnerCompliance(@PathVariable("ownerId") @Min(1) int ownerId) {
+        Owner owner = ownerRepository.findById(ownerId)
+            .orElseThrow(() -> new ResourceNotFoundException("Owner " + ownerId + " not found"));
+        return OwnerComplianceResponse.from(owner);
+    }
+
     @GetMapping
-    public List<Owner> findAll() {
-        return ownerRepository.findAll();
+    public Page<OwnerResponse> findAll(@PageableDefault(size = 20, sort = "lastName") Pageable pageable) {
+        return ownerRepository.findAll(pageable).map(OwnerResponse::from);
     }
 
-    /**
-     * AML/KYC name screening lookup
-     */
     @GetMapping(params = "lastName")
-    public List<Owner> searchByLastName(@RequestParam("lastName") String lastName) {
-        return ownerRepository.findByLastNameStartingWith(lastName);
+    public List<OwnerResponse> searchByLastName(
+        @RequestParam("lastName") @NotBlank @Size(min = 1, max = 50) String lastName) {
+        return ownerRepository.findTop50ByLastNameStartingWithIgnoreCase(lastName).stream()
+            .map(OwnerResponse::from)
+            .toList();
     }
 
-    /**
-     * Update Owner
-     */
     @PutMapping(value = "/{ownerId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void updateOwner(@PathVariable("ownerId") @Min(1) int ownerId, @Valid @RequestBody OwnerRequest ownerRequest) {
-        final Owner ownerModel = ownerRepository.findById(ownerId).orElseThrow(() -> new ResourceNotFoundException("Owner " + ownerId + " not found"));
+    public void updateOwner(
+        @PathVariable("ownerId") @Min(1) int ownerId,
+        @Valid @RequestBody OwnerRequest ownerRequest) {
+        final Owner ownerModel = ownerRepository.findById(ownerId)
+            .orElseThrow(() -> new ResourceNotFoundException("Owner " + ownerId + " not found"));
 
         ownerEntityMapper.map(ownerModel, ownerRequest);
-        log.info("Saving owner {}", ownerModel);
+        log.info("Updated owner id={}", ownerId);
         ownerRepository.save(ownerModel);
     }
 }

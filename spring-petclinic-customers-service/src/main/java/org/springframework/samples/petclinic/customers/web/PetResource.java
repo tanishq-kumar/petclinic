@@ -16,6 +16,7 @@
 package org.springframework.samples.petclinic.customers.web;
 
 import io.micrometer.core.annotation.Timed;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,7 +55,7 @@ class PetResource {
     @PostMapping("/owners/{ownerId}/pets")
     @ResponseStatus(HttpStatus.CREATED)
     public Pet processCreationForm(
-        @RequestBody PetRequest petRequest,
+        @Valid @RequestBody PetRequest petRequest,
         @PathVariable("ownerId") @Min(1) int ownerId) {
 
         Owner owner = ownerRepository.findById(ownerId)
@@ -65,23 +66,26 @@ class PetResource {
         return save(pet, petRequest);
     }
 
-    @PutMapping("/owners/*/pets/{petId}")
+    @PutMapping("/owners/{ownerId}/pets/{petId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void processUpdateForm(@RequestBody PetRequest petRequest) {
-        int petId = petRequest.id();
+    public void processUpdateForm(
+        @PathVariable("ownerId") @Min(1) int ownerId,
+        @PathVariable("petId") @Min(1) int petId,
+        @Valid @RequestBody PetRequest petRequest) {
         Pet pet = findPetById(petId);
+        assertPetBelongsToOwner(pet, ownerId);
         save(pet, petRequest);
     }
 
     private Pet save(final Pet pet, final PetRequest petRequest) {
-
         pet.setName(petRequest.name());
         pet.setBirthDate(petRequest.birthDate());
 
-        petRepository.findPetTypeById(petRequest.typeId())
-            .ifPresent(pet::setType);
+        PetType type = petRepository.findPetTypeById(petRequest.typeId())
+            .orElseThrow(() -> new BadRequestException("Unknown pet type id: " + petRequest.typeId()));
+        pet.setType(type);
 
-        log.info("Persisting pet {}", pet);
+        log.info("Persisting pet id={} ownerId={}", pet.getId(), pet.getOwner() != null ? pet.getOwner().getId() : null);
         return petRepository.save(pet);
     }
 
@@ -91,10 +95,18 @@ class PetResource {
         return new PetDetails(pet);
     }
 
-
     private Pet findPetById(int petId) {
         return petRepository.findById(petId)
             .orElseThrow(() -> new ResourceNotFoundException("Pet " + petId + " not found"));
     }
 
+    private void assertPetBelongsToOwner(Pet pet, int ownerId) {
+        if (pet.getOwner() == null || !ownerIdEquals(pet.getOwner().getId(), ownerId)) {
+            throw new BadRequestException("Pet " + pet.getId() + " does not belong to owner " + ownerId);
+        }
+    }
+
+    private boolean ownerIdEquals(Integer petOwnerId, int ownerId) {
+        return petOwnerId != null && petOwnerId == ownerId;
+    }
 }

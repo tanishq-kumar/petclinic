@@ -46,6 +46,7 @@ import org.springframework.web.bind.annotation.RestController;
 class VisitResource {
 
     private static final Logger log = LoggerFactory.getLogger(VisitResource.class);
+    private static final int MAX_BULK_PET_IDS = 50;
 
     private final VisitRepository visitRepository;
 
@@ -60,18 +61,25 @@ class VisitResource {
         @PathVariable("petId") @Min(1) int petId) {
 
         visit.setPetId(petId);
-        log.info("Recording visit {}", visit);
-        return visitRepository.save(visit);
+        Visit saved = visitRepository.save(visit);
+        log.info("Recorded visit id={} petId={}", saved.getId(), petId);
+        return saved;
     }
 
     @GetMapping("owners/*/pets/{petId}/visits")
     public List<Visit> read(@PathVariable("petId") @Min(1) int petId) {
-        return visitRepository.findByPetId(petId);
+        return visitRepository.findByPetIdOrderByDateDesc(petId);
     }
 
     @GetMapping("pets/visits")
     public Visits read(@RequestParam("petId") List<Integer> petIds) {
-        final List<Visit> byPetIdIn = visitRepository.findByPetIdIn(petIds);
+        if (petIds == null || petIds.isEmpty()) {
+            throw new BadRequestException("At least one petId is required");
+        }
+        if (petIds.size() > MAX_BULK_PET_IDS) {
+            throw new BadRequestException("Cannot query more than " + MAX_BULK_PET_IDS + " pets at once");
+        }
+        final List<Visit> byPetIdIn = visitRepository.findByPetIdInOrderByDateDesc(petIds);
         return new Visits(byPetIdIn);
     }
 

@@ -31,5 +31,5 @@ import java.util.List;
  */
 public interface OwnerRepository extends JpaRepository<Owner, Integer> {
 
-    List<Owner> findByLastNameStartingWith(String lastName);
+    List<Owner> findTop50ByLastNameStartingWithIgnoreCase(String lastName);
 }
