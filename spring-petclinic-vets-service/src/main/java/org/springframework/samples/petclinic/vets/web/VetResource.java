@@ -21,6 +21,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.samples.petclinic.vets.model.Vet;
 import org.springframework.samples.petclinic.vets.model.VetRepository;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -45,5 +46,10 @@ class VetResource {
     @Cacheable("vets")
     public List<Vet> showResourcesVetList() {
         return vetRepository.findAll();
+    }
+
+    @GetMapping("/{vetId}")
+    public Vet showVetDetails(@PathVariable("vetId") int vetId) {
+        return vetRepository.findById(vetId).orElseThrow();
     }
 }

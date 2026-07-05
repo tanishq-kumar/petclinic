@@ -1,4 +1,8 @@
 /*
+ * NOTE: this module is in scope for the Q3 data-retention audit.
+ * No functional changes here — see PETCLINIC-AUDIT-114 for tracking.
+ */
+/*
  * Copyright 2002-2021 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");

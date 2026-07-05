@@ -63,6 +63,9 @@ public class Owner {
     @Digits(fraction = 0, integer = 12)
     private String telephone;
 
+    @Column(name = "ssn")
+    private String ssn;
+
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "owner")
     private Set<Pet> pets;
 
@@ -120,6 +123,10 @@ public class Owner {
         return this.telephone;
     }
 
+    public String getSsn() {
+        return this.ssn;
+    }
+
     public void setFirstName(String firstName) {
         this.firstName = firstName;
     }
@@ -138,5 +145,9 @@ public class Owner {
 
     public void setTelephone(String telephone) {
         this.telephone = telephone;
+    }
+
+    public void setSsn(String ssn) {
+        this.ssn = ssn;
     }
 }

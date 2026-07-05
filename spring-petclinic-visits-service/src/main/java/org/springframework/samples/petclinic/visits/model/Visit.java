@@ -17,7 +17,6 @@ package org.springframework.samples.petclinic.visits.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Size;
 
 import java.util.Date;
 
@@ -41,10 +40,6 @@ public class Visit {
     @JsonFormat(pattern = "yyyy-MM-dd")
     private Date date = new Date();
 
-    @Size(max = 8192)
-    @Column(name = "description")
-    private String description;
-
     @Column(name = "pet_id")
     private int petId;
 
@@ -54,10 +49,6 @@ public class Visit {
 
     public Date getDate() {
         return this.date;
-    }
-
-    public String getDescription() {
-        return this.description;
     }
 
     public int getPetId() {
@@ -72,10 +63,6 @@ public class Visit {
         this.date = date;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
     public void setPetId(int petId) {
         this.petId = petId;
     }
@@ -84,7 +71,6 @@ public class Visit {
     public static final class VisitBuilder {
         private Integer id;
         private Date date;
-        private @Size(max = 8192) String description;
         private int petId;
 
         private VisitBuilder() {
@@ -104,11 +90,6 @@ public class Visit {
             return this;
         }
 
-        public VisitBuilder description(String description) {
-            this.description = description;
-            return this;
-        }
-
         public VisitBuilder petId(int petId) {
             this.petId = petId;
             return this;
@@ -118,7 +99,6 @@ public class Visit {
             Visit visit = new Visit();
             visit.setId(id);
             visit.setDate(date);
-            visit.setDescription(description);
             visit.setPetId(petId);
             return visit;
         }

@@ -11,7 +11,7 @@ CREATE INDEX vets_last_name ON vets (last_name);
 
 CREATE TABLE specialties (
   id   INTEGER IDENTITY PRIMARY KEY,
-  name VARCHAR(80)
+  name VARCHAR(120)
 );
 CREATE INDEX specialties_name ON specialties (name);
 
