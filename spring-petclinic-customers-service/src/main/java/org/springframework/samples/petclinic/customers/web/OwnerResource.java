@@ -78,6 +78,14 @@ class OwnerResource {
     }
 
     /**
+     * AML/KYC name screening lookup
+     */
+    @GetMapping(params = "lastName")
+    public List<Owner> searchByLastName(@RequestParam("lastName") String lastName) {
+        return ownerRepository.findByLastNameStartingWith(lastName);
+    }
+
+    /**
      * Update Owner
      */
     @PutMapping(value = "/{ownerId}")

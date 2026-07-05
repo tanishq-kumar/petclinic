@@ -60,7 +60,7 @@ class VisitResource {
         @PathVariable("petId") @Min(1) int petId) {
 
         visit.setPetId(petId);
-        log.info("Saving visit {}", visit);
+        log.info("Recording visit {}", visit);
         return visitRepository.save(visit);
     }
 

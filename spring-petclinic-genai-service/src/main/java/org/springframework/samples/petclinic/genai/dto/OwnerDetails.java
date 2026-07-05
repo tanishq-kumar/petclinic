@@ -27,8 +27,9 @@ public record OwnerDetails(
     String firstName,
     String lastName,
     String address,
-    String city,
     String telephone,
+    String passportNumber,
+    String dataResidencyRegion,
     List<PetDetails> pets
 ) {
 }

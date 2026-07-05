@@ -27,8 +27,9 @@ public record OwnerDetails(
     String firstName,
     String lastName,
     String address,
-    String city,
     String telephone,
+    String passportNumber,
+    String dataResidencyRegion,
     List<PetDetails> pets) {
 
     @JsonIgnore
@@ -44,8 +45,9 @@ public record OwnerDetails(
         private String firstName;
         private String lastName;
         private String address;
-        private String city;
         private String telephone;
+        private String passportNumber;
+        private String dataResidencyRegion;
         private List<PetDetails> pets;
 
         private OwnerDetailsBuilder() {
@@ -75,13 +77,18 @@ public record OwnerDetails(
             return this;
         }
 
-        public OwnerDetailsBuilder city(String city) {
-            this.city = city;
+        public OwnerDetailsBuilder telephone(String telephone) {
+            this.telephone = telephone;
             return this;
         }
 
-        public OwnerDetailsBuilder telephone(String telephone) {
-            this.telephone = telephone;
+        public OwnerDetailsBuilder passportNumber(String passportNumber) {
+            this.passportNumber = passportNumber;
+            return this;
+        }
+
+        public OwnerDetailsBuilder dataResidencyRegion(String dataResidencyRegion) {
+            this.dataResidencyRegion = dataResidencyRegion;
             return this;
         }
 
@@ -91,7 +98,7 @@ public record OwnerDetails(
         }
 
         public OwnerDetails build() {
-            return new OwnerDetails(id, firstName, lastName, address, city, telephone, pets);
+            return new OwnerDetails(id, firstName, lastName, address, telephone, passportNumber, dataResidencyRegion, pets);
         }
     }
 }

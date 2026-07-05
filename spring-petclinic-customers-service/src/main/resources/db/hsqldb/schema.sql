@@ -13,9 +13,11 @@ CREATE TABLE owners (
   first_name VARCHAR(30),
   last_name  VARCHAR(30),
   address    VARCHAR(255),
-  city       VARCHAR(80),
   telephone  VARCHAR(12),
-  ssn        VARCHAR(11)
+  ssn        VARCHAR(256),
+  passport_number VARCHAR(20),
+  kyc_verified_at TIMESTAMP,
+  data_residency_region VARCHAR(10)
 );
 CREATE INDEX owners_last_name ON owners (last_name);
 

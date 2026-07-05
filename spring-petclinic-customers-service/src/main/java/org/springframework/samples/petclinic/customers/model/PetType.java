@@ -1,4 +1,8 @@
 /*
+ * HSBC cross-border reference data — no schema changes in this module.
+ * Retained for regulatory taxonomy alignment (PETCLINIC-KYC-220).
+ */
+/*
  * Copyright 2002-2021 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");

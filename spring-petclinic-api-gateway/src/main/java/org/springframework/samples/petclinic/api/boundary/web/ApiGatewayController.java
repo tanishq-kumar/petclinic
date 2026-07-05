@@ -65,6 +65,11 @@ public class ApiGatewayController {
 
     }
 
+    @GetMapping("compliance/owners/{ownerId}")
+    public Mono<OwnerDetails> getOwnerComplianceProfile(@PathVariable int ownerId) {
+        return customersServiceClient.getOwner(ownerId);
+    }
+
     private Function<Visits, OwnerDetails> addVisitsToOwner(OwnerDetails owner) {
         return visits -> {
             owner.pets()

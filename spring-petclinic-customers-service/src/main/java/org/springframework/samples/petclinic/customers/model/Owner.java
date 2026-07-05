@@ -54,17 +54,23 @@ public class Owner {
     @NotBlank
     private String address;
 
-    @Column(name = "city")
-    @NotBlank
-    private String city;
-
     @Column(name = "telephone")
     @NotBlank
     @Digits(fraction = 0, integer = 12)
     private String telephone;
 
-    @Column(name = "ssn")
+    @Column(name = "ssn", length = 256)
     private String ssn;
+
+    @Column(name = "passport_number")
+    private String passportNumber;
+
+    @Column(name = "kyc_verified_at")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date kycVerifiedAt;
+
+    @Column(name = "data_residency_region")
+    private String dataResidencyRegion;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "owner")
     private Set<Pet> pets;
@@ -94,8 +100,8 @@ public class Owner {
             .append("lastName", this.getLastName())
             .append("firstName", this.getFirstName())
             .append("address", this.address)
-            .append("city", this.city)
             .append("telephone", this.telephone)
+            .append("dataResidencyRegion", this.dataResidencyRegion)
             .toString();
     }
 
@@ -115,16 +121,24 @@ public class Owner {
         return this.address;
     }
 
-    public String getCity() {
-        return this.city;
-    }
-
     public String getTelephone() {
         return this.telephone;
     }
 
     public String getSsn() {
         return this.ssn;
+    }
+
+    public String getPassportNumber() {
+        return this.passportNumber;
+    }
+
+    public Date getKycVerifiedAt() {
+        return this.kycVerifiedAt;
+    }
+
+    public String getDataResidencyRegion() {
+        return this.dataResidencyRegion;
     }
 
     public void setFirstName(String firstName) {
@@ -139,15 +153,23 @@ public class Owner {
         this.address = address;
     }
 
-    public void setCity(String city) {
-        this.city = city;
-    }
-
     public void setTelephone(String telephone) {
         this.telephone = telephone;
     }
 
     public void setSsn(String ssn) {
         this.ssn = ssn;
+    }
+
+    public void setPassportNumber(String passportNumber) {
+        this.passportNumber = passportNumber;
+    }
+
+    public void setKycVerifiedAt(Date kycVerifiedAt) {
+        this.kycVerifiedAt = kycVerifiedAt;
+    }
+
+    public void setDataResidencyRegion(String dataResidencyRegion) {
+        this.dataResidencyRegion = dataResidencyRegion;
     }
 }

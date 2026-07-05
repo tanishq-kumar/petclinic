@@ -13,9 +13,11 @@ CREATE TABLE IF NOT EXISTS owners (
   first_name VARCHAR(30),
   last_name VARCHAR(30),
   address VARCHAR(255),
-  city VARCHAR(80),
   telephone VARCHAR(20),
-  ssn VARCHAR(11),
+  ssn VARCHAR(256),
+  passport_number VARCHAR(20),
+  kyc_verified_at TIMESTAMP NULL,
+  data_residency_region VARCHAR(10),
   INDEX(last_name)
 ) engine=InnoDB;
 
