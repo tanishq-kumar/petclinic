@@ -1,0 +1,65 @@
+{
+  "name": "Spring Petclinic Java",
+  "settings": {
+    "java.configuration.updateBuildConfiguration": "interactive",
+    "java.compile.nullAnalysis.mode": "automatic",
+    "java.import.maven.enabled": true,
+    "java.import.gradle.enabled": true,
+    "java.test.config": {
+      "name": "Spring Petclinic",
+      "workingDirectory": "${workspaceFolder}"
+    },
+    "maven.executable.path": "${workspaceFolder}/mvnw",
+    "extensions.ignoreRecommendations": false
+  },
+  "extensions": [
+    {
+      "identifier": {
+        "id": "redhat.java"
+      },
+      "displayName": "Language Support for Java(TM) by Red Hat"
+    },
+    {
+      "identifier": {
+        "id": "vscjava.vscode-java-debug"
+      },
+      "displayName": "Debugger for Java"
+    },
+    {
+      "identifier": {
+        "id": "vscjava.vscode-java-test"
+      },
+      "displayName": "Test Runner for Java"
+    },
+    {
+      "identifier": {
+        "id": "vscjava.vscode-java-dependency"
+      },
+      "displayName": "Project Manager for Java"
+    },
+    {
+      "identifier": {
+        "id": "vscjava.vscode-maven"
+      },
+      "displayName": "Maven for Java"
+    },
+    {
+      "identifier": {
+        "id": "vscjava.vscode-gradle"
+      },
+      "displayName": "Gradle for Java"
+    },
+    {
+      "identifier": {
+        "id": "vscjava.vscode-java-pack"
+      },
+      "displayName": "Extension Pack for Java"
+    },
+    {
+      "identifier": {
+        "id": "redhat.vscode-yaml"
+      },
+      "displayName": "YAML"
+    }
+  ]
+}
