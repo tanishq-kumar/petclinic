@@ -15,6 +15,7 @@
  */
 package org.springframework.samples.petclinic.customers.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.NotBlank;
@@ -99,8 +100,6 @@ public class Owner {
             .append("id", this.getId())
             .append("lastName", this.getLastName())
             .append("firstName", this.getFirstName())
-            .append("address", this.address)
-            .append("telephone", this.telephone)
             .append("dataResidencyRegion", this.dataResidencyRegion)
             .toString();
     }
@@ -125,10 +124,12 @@ public class Owner {
         return this.telephone;
     }
 
+    @JsonIgnore
     public String getSsn() {
         return this.ssn;
     }
 
+    @JsonIgnore
     public String getPassportNumber() {
         return this.passportNumber;
     }

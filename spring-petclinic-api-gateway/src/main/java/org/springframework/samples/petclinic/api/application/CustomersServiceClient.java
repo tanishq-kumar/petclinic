@@ -26,14 +26,14 @@ import reactor.core.publisher.Mono;
 @Component
 public class CustomersServiceClient {
 
-    private final WebClient.Builder webClientBuilder;
+    private final WebClient webClient;
 
-    public CustomersServiceClient(WebClient.Builder webClientBuilder) {
-        this.webClientBuilder = webClientBuilder;
+    public CustomersServiceClient(WebClient webClient) {
+        this.webClient = webClient;
     }
 
     public Mono<OwnerDetails> getOwner(final int ownerId) {
-        return webClientBuilder.build().get()
+        return webClient.get()
             .uri("http://customers-service/owners/{ownerId}", ownerId)
             .retrieve()
             .bodyToMono(OwnerDetails.class);

@@ -20,6 +20,8 @@ import org.springframework.cloud.client.circuitbreaker.ReactiveCircuitBreakerFac
 import org.springframework.samples.petclinic.api.application.CustomersServiceClient;
 import org.springframework.samples.petclinic.api.application.VisitsServiceClient;
 import org.springframework.samples.petclinic.api.dto.OwnerDetails;
+import org.springframework.samples.petclinic.api.dto.PetDetails;
+import org.springframework.samples.petclinic.api.dto.VisitDetails;
 import org.springframework.samples.petclinic.api.dto.Visits;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -27,8 +29,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Mono;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Function;
 
 /**
  * @author Maciej Szarlinski
@@ -60,7 +62,7 @@ public class ApiGatewayController {
                         ReactiveCircuitBreaker cb = cbFactory.create("getOwnerDetails");
                         return cb.run(it, throwable -> emptyVisitsForPets());
                     })
-                    .map(addVisitsToOwner(owner))
+                    .map(visits -> mergeVisitsIntoOwner(owner, visits))
             );
 
     }
@@ -70,16 +72,31 @@ public class ApiGatewayController {
         return customersServiceClient.getOwner(ownerId);
     }
 
-    private Function<Visits, OwnerDetails> addVisitsToOwner(OwnerDetails owner) {
-        return visits -> {
-            owner.pets()
-                .forEach(pet -> pet.visits()
-                    .addAll(visits.items().stream()
-                        .filter(v -> v.petId() == pet.id())
-                        .toList())
+    private OwnerDetails mergeVisitsIntoOwner(OwnerDetails owner, Visits visits) {
+        List<PetDetails> petsWithVisits = owner.pets().stream()
+            .map(pet -> {
+                List<VisitDetails> petVisits = visits.items().stream()
+                    .filter(v -> v.petId() == pet.id())
+                    .toList();
+                return new PetDetails(
+                    pet.id(),
+                    pet.name(),
+                    pet.birthDate(),
+                    pet.type(),
+                    new ArrayList<>(petVisits)
                 );
-            return owner;
-        };
+            })
+            .toList();
+        return new OwnerDetails(
+            owner.id(),
+            owner.firstName(),
+            owner.lastName(),
+            owner.address(),
+            owner.telephone(),
+            owner.passportNumber(),
+            owner.dataResidencyRegion(),
+            petsWithVisits
+        );
     }
 
     private Mono<Visits> emptyVisitsForPets() {

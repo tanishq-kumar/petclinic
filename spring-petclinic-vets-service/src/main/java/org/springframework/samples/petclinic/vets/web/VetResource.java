@@ -17,6 +17,7 @@ package org.springframework.samples.petclinic.vets.web;
 
 import java.util.List;
 
+import jakarta.validation.constraints.Min;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.samples.petclinic.vets.model.Vet;
 import org.springframework.samples.petclinic.vets.model.VetRepository;
@@ -49,7 +50,8 @@ class VetResource {
     }
 
     @GetMapping("/{vetId}")
-    public Vet showVetDetails(@PathVariable("vetId") int vetId) {
-        return vetRepository.findById(vetId).orElseThrow();
+    public Vet showVetDetails(@PathVariable("vetId") @Min(1) int vetId) {
+        return vetRepository.findById(vetId)
+            .orElseThrow(() -> new ResourceNotFoundException("Vet " + vetId + " not found"));
     }
 }

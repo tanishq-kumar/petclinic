@@ -30,18 +30,25 @@ import static java.util.stream.Collectors.joining;
 @Component
 public class VisitsServiceClient {
 
-    // Could be changed for testing purpose
+    private static final int MAX_PET_IDS = 50;
+
     private String hostname = "http://visits-service/";
 
-    private final WebClient.Builder webClientBuilder;
+    private final WebClient webClient;
 
-    public VisitsServiceClient(WebClient.Builder webClientBuilder) {
-        this.webClientBuilder = webClientBuilder;
+    public VisitsServiceClient(WebClient webClient) {
+        this.webClient = webClient;
     }
 
     public Mono<Visits> getVisitsForPets(final List<Integer> petIds) {
-        return webClientBuilder.build()
-            .get()
+        if (petIds == null || petIds.isEmpty()) {
+            return Mono.just(new Visits(List.of()));
+        }
+        if (petIds.size() > MAX_PET_IDS) {
+            return Mono.error(new IllegalArgumentException(
+                "Cannot fetch visits for more than " + MAX_PET_IDS + " pets"));
+        }
+        return webClient.get()
             .uri(hostname + "pets/visits?petId={petId}", joinIds(petIds))
             .retrieve()
             .bodyToMono(Visits.class);

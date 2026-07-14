@@ -28,7 +28,7 @@ class VisitResourceTest {
 
     @Test
     void shouldFetchVisits() throws Exception {
-        given(visitRepository.findByPetIdIn(asList(111, 222)))
+        given(visitRepository.findByPetIdInOrderByDateDesc(asList(111, 222)))
             .willReturn(
                 asList(
                     Visit.VisitBuilder.aVisit()
